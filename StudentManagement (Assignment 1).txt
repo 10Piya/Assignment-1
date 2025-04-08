@@ -1,0 +1,150 @@
+package CoreJava;
+
+import java.util.Scanner;
+
+abstract class Person 
+{
+	protected String name;
+	protected int age;
+	public Person(String name, int age) 
+	{
+		this.name = name;
+		this.age = age;
+	}
+	public abstract void displayDetails();
+}
+
+class Student extends Person 
+{
+	private int[] marks = new int[3];
+	private String grade;
+	
+	public Student(String name, int age, int[] marks) 
+	{
+		super(name, age);
+		this.marks = marks;
+		this.grade = calculateGrade();
+	}
+
+	private String calculateGrade() 
+	{
+		int total = 0;
+		for (int mark : marks) 
+		{
+			total += mark;
+		}
+		int avg = total / marks.length;
+		
+		if (avg >= 90) 
+		{
+			return "A";
+		}
+		else if (avg >= 75)
+		{
+			return "B";
+		}
+		else 
+		{
+			switch (avg / 10)
+			{
+				case 6: return "C";
+				case 5: return "D";
+				default: return "F";
+			}
+		}
+	}
+	public void displayDetails() 
+	{
+		System.out.println("Name: " + name + "\nAge: " + age);
+		System.out.print("Marks: ");
+		for (int m : marks)
+		{
+			System.out.print(m + "\n");
+    	}
+		System.out.println("\nGrade: " + grade);
+	}
+}
+
+class Teacher extends Person 
+{
+	private String subject;
+
+	public Teacher(String name, int age, String subject) 
+	{
+		super(name, age);
+		this.subject = subject;
+	}
+
+	public void displayDetails() 
+	{
+		System.out.println("Teacher: " + name + "\nAge: " + age + "\nSubject: " + subject);
+	}
+}
+
+
+class SaveTask extends Thread 
+{
+	public void run() 
+	{
+		System.out.println("Saving data to database...");
+		try 
+		{
+			Thread.sleep(2000); 
+		} 
+		catch (InterruptedException e) 
+		{
+			System.out.println("Thread interrupted.");
+		}
+		System.out.println("Data saved successfully!");
+	}
+}
+
+public class StudentManagementSystem 
+{
+	public static void main(String[] args) 
+	{
+		Scanner sc = new Scanner(System.in);
+		String s_name, t_name, sub;
+		int age,t_Age, marks[];
+		System.out.println("Please enter Student Name : ");
+		s_name=sc.next();
+		System.out.println("Enter age : ");
+		age=sc.nextInt();
+		marks=new int[3];
+		System.out.println("Enter marks of 3 sub : ");
+		for(int i=0;i<3;i++)
+		{
+			marks[i]=sc.nextInt();
+		}
+		System.out.println("Enter Teacher Name :");
+		t_name=sc.next();
+		System.out.println("Enter Teacher age :");
+		t_Age=sc.nextInt();
+		System.out.println("Enter Subject of Teacher : ");
+		sub=sc.next();
+		try 
+		{
+			Student s1 = new Student(s_name, age, marks);
+
+			Teacher t1 = new Teacher(t_name,t_Age,sub);
+
+  
+			Person[] people = {s1, t1};
+			for (Person p : people) 
+			{
+				p.displayDetails(); 
+				System.out.println("-----");
+			}
+
+			SaveTask task = new SaveTask();
+			task.start();
+
+		} 
+		catch (Exception e) 
+		{
+			System.out.println("Something went wrong: " + e.getMessage());
+		}
+		sc.close();
+	}
+}
+
